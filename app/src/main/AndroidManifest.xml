@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.zonelock">
+
+    <permission android:name="com.example.zonelock.PERMISSION_USE_SERVICE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ZoneLock"
+        tools:targetApi="31">
+
+        <!-- Boot 시 자동 실행 설정 -->
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Device Admin Receiver 등록 -->
+        <receiver
+            android:name=".MyDeviceAdminReceiver"
+            android:permission="android.permission.BIND_DEVICE_ADMIN"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin_receiver" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".LocationMonitorService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="com.example.zonelock.PERMISSION_USE_SERVICE" />
+
+        <service
+            android:name=".NetworkMonitorService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="com.example.zonelock.PERMISSION_USE_SERVICE" />
+
+        <activity android:name=".MapActivity" />
+        <!--        <service android:name=".LocationMonitorService" />-->
+
+        <activity
+            android:name=".AdminActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ZoneLock">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".LockActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ZoneLock" />
+    </application>
+
+</manifest>

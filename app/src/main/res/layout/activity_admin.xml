@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <!-- SSID 표시용 텍스트 -->
+    <TextView
+        android:id="@+id/txt_ssid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="현재 연결된 와이파이는 ...입니다."
+        android:textSize="16sp"
+        android:layout_marginBottom="20dp" />
+
+    <TextView
+        android:id="@+id/helloText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Admin!"
+        android:textSize="20sp"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal" />
+
+    <!-- 위치 출력용 TextView -->
+    <TextView
+        android:id="@+id/txt_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="현재 위치는 ...입니다."
+        android:textSize="16sp"
+        android:layout_marginBottom="20dp" />
+
+    <Button
+        android:id="@+id/btn_to_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go to Lock Page" />
+
+    <Button
+        android:id="@+id/btn_start_network_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Network Service" />
+
+    <Button
+        android:id="@+id/btn_open_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="사용 가능 지역 보기"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/btn_enable_admin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="앱 삭제 방지 활성화"
+        android:layout_marginTop="24dp" />
+
+    <Button
+        android:id="@+id/btn_disable_admin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="앱 삭제 방지 해제"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="32dp" />
+
+</LinearLayout>
