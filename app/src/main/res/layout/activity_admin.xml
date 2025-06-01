@@ -36,13 +36,19 @@
         android:id="@+id/btn_to_lock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Go to Lock Page" />
+        android:text="잠금" />
+
+    <Button
+        android:id="@+id/btn_go_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="홈으로 이동" />
 
     <Button
         android:id="@+id/btn_start_network_service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Network Service" />
+        android:text="네트워크 감지" />
 
     <Button
         android:id="@+id/btn_open_map"

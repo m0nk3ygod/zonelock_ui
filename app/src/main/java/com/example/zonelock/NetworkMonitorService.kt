@@ -15,18 +15,16 @@ import java.io.IOException
 class NetworkMonitorService : Service() {
 
     private val TAG = "NetworkMonitorService"
-    private val apiUrl = "https://c96c-203-241-183-12.ngrok-free.app/ssid" // ← ngrok 주소 바뀌면 여기도 갱신
+    private val apiUrl = "https://c96c-203-241-183-12.ngrok-free.app/ssid" // ← ngrok 주소 바뀌면 갱신할 것
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Thread {
             try {
-                // 현재 SSID 가져오기
                 val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
                 val wifiInfo = wifiManager.connectionInfo
-                val currentSSID = wifiInfo.ssid.replace("\"", "") // 쌍따옴표 제거
+                val currentSSID = wifiInfo.ssid.replace("\"", "")
                 Log.d(TAG, "현재 SSID: $currentSSID")
 
-                // Flask API 호출
                 val client = OkHttpClient()
                 val request = Request.Builder()
                     .url(apiUrl)
@@ -59,7 +57,14 @@ class NetworkMonitorService : Service() {
                             Log.d(TAG, message)
                             showToast(message)
 
-                            // 여기서 조건에 따라 LockActivity 실행 등 가능
+                            // 🔒 SSID가 불일치하면 LockActivity로 이동
+                            if (!isMatched) {
+                                val intent = Intent(applicationContext, LockActivity::class.java).apply {
+                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                }
+                                startActivity(intent)
+                            }
+
                         } else {
                             Log.e(TAG, "API 응답 실패: ${response.code}")
                             showToast("API 응답 실패: ${response.code}")

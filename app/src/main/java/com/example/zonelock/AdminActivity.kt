@@ -25,6 +25,10 @@ class AdminActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin)
 
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            stopLockTask()
+        }
+
         // ✅ 현재 연결된 SSID 출력
         val ssidTextView = findViewById<TextView>(R.id.txt_ssid)
         val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -71,7 +75,16 @@ class AdminActivity : AppCompatActivity() {
 
         // ✅ MapActivity 열기
         findViewById<Button>(R.id.btn_open_map).setOnClickListener {
-            startActivity(Intent(this, MapActivity::class.java))
+            val intent = Intent(this, MapActivity::class.java)
+            intent.putExtra("view_only", true)
+            startActivity(intent)
+        }
+
+        findViewById<Button>(R.id.btn_go_home).setOnClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+            finish()
         }
 
         // ✅ Device Admin 관련

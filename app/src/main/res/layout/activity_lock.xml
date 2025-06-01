@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_lock"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:gravity="center"
-    android:orientation="vertical">
+    android:background="#000000"
+    android:padding="24dp">
 
     <TextView
-        android:id="@+id/helloText"
+        android:id="@+id/txt_locked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Locked!"
+        android:text="🔒 잠금 상태입니다"
+        android:textColor="#FFFFFF"
         android:textSize="20sp"
-        android:layout_marginTop="16dp"
-        android:layout_gravity="center_horizontal" />
+        android:paddingBottom="24dp" />
 
-    <Button
-        android:id="@+id/btn_to_admin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Go to Admin Page" />
+<!--    <Button-->
+<!--        android:id="@+id/btn_refresh_network"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="네트워크 새로고침" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/btn_open_map"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="지도 보기"-->
+<!--        android:layout_marginTop="12dp" />-->
 </LinearLayout>
