@@ -69,4 +69,11 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    implementation("mysql:mysql-connector-java:8.0.33")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    implementation("com.google.android.gms:play-services-maps:19.2.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
 }

@@ -3,12 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.zonelock">
 
+    <!-- 커스텀 퍼미션 -->
     <permission android:name="com.example.zonelock.PERMISSION_USE_SERVICE"
         android:protectionLevel="signature" />
 
+    <!-- 필수 권한 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
@@ -22,7 +27,12 @@
         android:theme="@style/Theme.ZoneLock"
         tools:targetApi="31">
 
-        <!-- Boot 시 자동 실행 설정 -->
+        <!-- Google Maps API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDw5LmGgdfPLtUO5KllV80F3r3sZV1lxcA" />
+
+        <!-- Boot 시 자동 실행 -->
         <receiver
             android:name=".BootReceiver"
             android:enabled="true"
@@ -32,7 +42,7 @@
             </intent-filter>
         </receiver>
 
-        <!-- Device Admin Receiver 등록 -->
+        <!-- Device Admin -->
         <receiver
             android:name=".MyDeviceAdminReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN"
@@ -45,11 +55,13 @@
             </intent-filter>
         </receiver>
 
+        <!-- 서비스 -->
         <service
             android:name=".LocationMonitorService"
             android:enabled="true"
             android:exported="true"
-            android:permission="com.example.zonelock.PERMISSION_USE_SERVICE" />
+            android:permission="com.example.zonelock.PERMISSION_USE_SERVICE"
+            android:foregroundServiceType="location" />
 
         <service
             android:name=".NetworkMonitorService"
@@ -57,12 +69,13 @@
             android:exported="true"
             android:permission="com.example.zonelock.PERMISSION_USE_SERVICE" />
 
+        <!-- 액티비티 -->
         <activity android:name=".MapActivity" />
-        <!--        <service android:name=".LocationMonitorService" />-->
 
         <activity
             android:name=".AdminActivity"
             android:exported="true"
+            android:label="@string/app_name"
             android:theme="@style/Theme.ZoneLock">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -75,5 +88,4 @@
             android:exported="false"
             android:theme="@style/Theme.ZoneLock" />
     </application>
-
 </manifest>
