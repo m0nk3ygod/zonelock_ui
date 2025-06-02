@@ -19,6 +19,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.*
+import okhttp3.*
+import org.json.JSONArray
+import java.io.IOException
 
 class HomeActivity : AppCompatActivity() {
 
@@ -29,14 +32,12 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var locationCallback: LocationCallback
 
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001
+    private val apiUrl = "https://c96c-203-241-183-12.ngrok-free.app"
 
-    // 관리자 진입 터치 감지
     private var secretTapCount = 0
     private val resetDelay: Long = 3000
     private val handler = Handler(Looper.getMainLooper())
-    private val resetTapRunnable = Runnable {
-        secretTapCount = 0
-    }
+    private val resetTapRunnable = Runnable { secretTapCount = 0 }
 
     private val correctPassword = "1234"
 
@@ -44,35 +45,125 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            stopLockTask()
-        }
+
 
         txtSsid = findViewById(R.id.txt_ssid_home)
         txtLocation = findViewById(R.id.txt_location_home)
         val btnToMap = findViewById<Button>(R.id.btn_to_map_home)
 
-        // 버튼 클릭 시 지도 보기
+        val networkIntent = Intent(this, NetworkMonitorService::class.java)
+        ContextCompat.startForegroundService(this, networkIntent)
+
+        val locationIntent = Intent(this, LocationMonitorService::class.java)
+        ContextCompat.startForegroundService(this, locationIntent)
+
+        val gpsIntent = Intent(this, LocationMonitorService::class.java)
+        startService(gpsIntent)
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            stopLockTask()
+        }
+
         btnToMap.setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
             intent.putExtra("view_only", true)
             startActivity(intent)
         }
 
-        // 현재 SSID 출력
         val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val ssid = wifiManager.connectionInfo.ssid.replace("\"", "")
         txtSsid.text = "현재 연결된 와이파이: $ssid"
 
-        // 위치 권한 확인
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         checkLocationPermission()
+
+        // → 여기서도 강제로 Lock 조건 검사 시작
+        checkSSIDAndLocation()
+    }
+
+    private fun checkSSIDAndLocation() {
+        // 1. SSID 확인
+        val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val currentSSID = wifiManager.connectionInfo.ssid.replace("\"", "")
+
+        val ssidRequest = Request.Builder().url("$apiUrl/ssid").build()
+        OkHttpClient().newCall(ssidRequest).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    val json = response.body?.string() ?: return
+                    val array = JSONArray(json)
+                    val ssidList = List(array.length()) { array.getString(it) }
+                    if (currentSSID !in ssidList) {
+                        goToLock()
+                    }
+                }
+            }
+        })
+
+        // 2. 위치 확인
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    val lat = location.latitude
+                    val lng = location.longitude
+
+                    val locationRequest = Request.Builder()
+                        .url("$apiUrl/coords")
+                        .build()
+
+                    OkHttpClient().newCall(locationRequest).enqueue(object : Callback {
+                        override fun onFailure(call: Call, e: IOException) {}
+                        override fun onResponse(call: Call, response: Response) {
+                            if (response.isSuccessful) {
+                                val responseBody = response.body?.string() ?: return
+                                val jsonArray = JSONArray(responseBody)
+                                val polygon = Array(jsonArray.length()) {
+                                    val obj = jsonArray.getJSONObject(it)
+                                    Pair(obj.getDouble("lat"), obj.getDouble("lng"))
+                                }
+
+                                if (!pointInPolygon(lat, lng, polygon)) {
+                                    goToLock()
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+        }
+    }
+
+    private fun goToLock() {
+        val intent = Intent(this, LockActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+    }
+
+    private fun pointInPolygon(lat: Double, lng: Double, polygon: Array<Pair<Double, Double>>): Boolean {
+        var inside = false
+        var j = polygon.size - 1
+        for (i in polygon.indices) {
+            val xi = polygon[i].first
+            val yi = polygon[i].second
+            val xj = polygon[j].first
+            val yj = polygon[j].second
+
+            val intersect = (yi > lng) != (yj > lng) &&
+                    lat < (xj - xi) * (lng - yi) / (yj - yi + 0.00000001) + xi
+            if (intersect) inside = !inside
+            j = i
+        }
+        return inside
     }
 
     private fun checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
+            != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -97,8 +188,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
+            == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.requestLocationUpdates(
                 locationRequest,
                 locationCallback,
@@ -119,7 +209,6 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    // 우측 상단 5번 터치 시 → 비밀번호 확인 후 AdminActivity 이동
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_DOWN) {
             val screenWidth = resources.displayMetrics.widthPixels
@@ -127,7 +216,6 @@ class HomeActivity : AppCompatActivity() {
             val x = event.x
             val y = event.y
 
-            // 화면의 오른쪽 상단 1/4 영역 감지
             if (x > screenWidth * 0.75 && y < screenHeight * 0.25) {
                 secretTapCount++
                 handler.removeCallbacks(resetTapRunnable)

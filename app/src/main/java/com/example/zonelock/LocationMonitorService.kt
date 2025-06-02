@@ -1,14 +1,19 @@
 package com.example.zonelock
 
 import android.Manifest
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.os.Build
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 
@@ -31,8 +36,17 @@ class LocationMonitorService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
+        // Foreground Service 설정
+        createNotificationChannel()
+        val notification: Notification = NotificationCompat.Builder(this, "location_channel")
+            .setContentTitle("ZoneLock GPS 감지 중")
+            .setContentText("현재 위치를 실시간으로 감지하고 있습니다.")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .build()
+        startForeground(2, notification)
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 3000).build()
 
         locationCallback = object : LocationCallback() {
@@ -102,5 +116,17 @@ class LocationMonitorService : Service() {
             return pX <= xinters
         }
         return false
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "location_channel",
+                "Location Monitoring",
+                NotificationManager.IMPORTANCE_LOW
+            )
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.createNotificationChannel(channel)
+        }
     }
 }
