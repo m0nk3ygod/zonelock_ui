@@ -1,32 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_lock"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:background="#000000"
+    android:background="@drawable/gradient_background"
     android:padding="24dp">
 
+    <!-- 상단 제목 -->
     <TextView
-        android:id="@+id/txt_locked"
+        android:id="@+id/lockText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="🔒 잠금 상태입니다"
+        android:text="LOCK"
+        android:textSize="70sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/title_font"
         android:textColor="#FFFFFF"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"/>
+
+    <!-- 부제목 -->
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="JoneLock"
         android:textSize="20sp"
-        android:paddingBottom="24dp" />
+        android:textColor="#9A9A9A"
+        app:layout_constraintTop_toBottomOf="@id/lockText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="4dp"/>
 
-<!--    <Button-->
-<!--        android:id="@+id/btn_refresh_network"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="네트워크 새로고침" />-->
 
-<!--    <Button-->
-<!--        android:id="@+id/btn_open_map"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="지도 보기"-->
-<!--        android:layout_marginTop="12dp" />-->
-</LinearLayout>
+
+    <ImageView
+        android:id="@+id/lockImage"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="112dp"
+        android:src="@drawable/lock_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subtitle" />
+
+
+
+    <View
+        android:id="@+id/grayBox"
+        android:layout_width="300dp"
+        android:layout_height="70dp"
+        android:background="@drawable/gray_box"
+        app:layout_constraintTop_toBottomOf="@id/lockImage"
+        app:layout_constraintStart_toStartOf="parent"
+        android:translationX="35dp"
+        android:translationY="8dp"
+        android:layout_marginTop="40dp"/>
+
+    <!-- 흰색 박스 (중간 ↖ 이동) -->
+    <View
+        android:id="@+id/whiteBox"
+        android:layout_width="300dp"
+        android:layout_height="70dp"
+        android:background="@drawable/white_box"
+        app:layout_constraintTop_toBottomOf="@id/lockImage"
+        app:layout_constraintStart_toStartOf="parent"
+        android:translationX="25dp"
+        android:translationY="-8dp"
+        android:layout_marginTop="40dp"/>
+
+    <!-- 하늘색 버튼 (텍스트 포함, 맨 위) -->
+    <TextView
+        android:id="@+id/warning_text"
+        android:layout_width="300dp"
+        android:layout_height="70dp"
+        android:background="@drawable/skyblue_box"
+        android:text="⚠ 허용 구역을 벗어났습니다 ⚠"
+        android:textColor="#37474F"
+        android:textSize="18sp"
+        android:fontFamily="@font/title_font"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/lockImage"
+        app:layout_constraintStart_toStartOf="parent"
+        android:translationX="30dp"
+        android:layout_marginTop="40dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

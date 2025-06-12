@@ -38,6 +38,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true //이 문장 ui에 필요
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -75,5 +76,8 @@ dependencies {
 
     implementation("com.google.android.gms:play-services-maps:19.2.0")
     implementation("com.google.android.gms:play-services-location:21.3.0")
+     //디자인에 필요
+    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
+
 
 }

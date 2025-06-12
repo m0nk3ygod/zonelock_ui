@@ -22,14 +22,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1000
 
     private val polygonCoords = listOf(
-        LatLng(35.146421, 129.006428),
-        LatLng(35.145915, 129.006488),
-        LatLng(35.145510, 129.006725),
-        LatLng(35.145694, 129.007742),
-        LatLng(35.146064, 129.007747),
-        LatLng(35.146178, 129.008721),
-        LatLng(35.146597, 129.008568)
+        LatLng(35.146516, 129.006342),
+        LatLng(35.145960, 129.006416),
+        LatLng(35.145359, 129.006772),
+        LatLng(35.145510, 129.007841),
+        LatLng(35.145912, 129.007746),
+        LatLng(35.146034, 129.007986),
+        LatLng(35.146159, 129.008734),
+        LatLng(35.146701, 129.008545),
+        LatLng(35.146594, 129.007553)
     )
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -7,4 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!--밑에가 ui-->
+    <color name="soft_blue">#D8E9F7</color>
+    <color name="main_blue">#CFE7FF</color>
+    <color name="border_blue">#AACCEE</color>
+    <color name="text_gray">#7D7D7D</color>
+    <color name="warning_red">#FF4C4C</color>
+
 </resources>
