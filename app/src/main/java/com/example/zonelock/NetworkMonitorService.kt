@@ -131,16 +131,33 @@ class NetworkMonitorService : Service() {
     private fun checkSSID() {
         try {
             val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+
+            // 1️⃣ 와이파이 꺼져있으면 바로 잠금
+            if (!wifiManager.isWifiEnabled) {
+                Log.e(TAG, "📴 Wi-Fi 꺼져 있음 - LockActivity 이동")
+                updateNotificationForMismatch()
+                return
+            }
+
             val wifiInfo = wifiManager.connectionInfo
             val currentSSID = wifiInfo.ssid.replace("\"", "")
             Log.d(TAG, "현재 SSID: $currentSSID")
 
+            // 2️⃣ SSID가 아예 인식 안 되는 경우도 바로 잠금
+            if (currentSSID == "<unknown ssid>") {
+                Log.e(TAG, "📛 SSID 인식 실패 - LockActivity 이동")
+                updateNotificationForMismatch()
+                return
+            }
+
+            // 3️⃣ API 요청 → SSID 리스트 확인
             val client = OkHttpClient()
             val request = Request.Builder().url(apiUrl).build()
 
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
-                    Log.e(TAG, "API 요청 실패: ${e.message}")
+                    Log.e(TAG, "🌐 API 요청 실패 - LockActivity 이동: ${e.message}")
+                    updateNotificationForMismatch()
                 }
 
                 override fun onResponse(call: Call, response: Response) {
@@ -156,12 +173,14 @@ class NetworkMonitorService : Service() {
                             updateNotificationForMismatch()
                         }
                     } else {
-                        Log.e(TAG, "API 응답 실패: ${response.code}")
+                        Log.e(TAG, "❗ API 응답 실패 (${response.code}) - LockActivity 이동")
+                        updateNotificationForMismatch()
                     }
                 }
             })
         } catch (e: Exception) {
-            Log.e(TAG, "예외 발생: ${e.message}", e)
+            Log.e(TAG, "예외 발생 - LockActivity 이동: ${e.message}", e)
+            updateNotificationForMismatch()
         }
     }
 
