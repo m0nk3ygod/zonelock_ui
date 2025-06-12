@@ -11,6 +11,7 @@ import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.os.Looper
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -60,25 +61,25 @@ class AdminActivity : AppCompatActivity() {
         }
 
         // ✅ LockActivity 이동
-        findViewById<Button>(R.id.btn_to_lock).setOnClickListener {
+        findViewById<ImageButton>(R.id.btn_to_lock).setOnClickListener {
             startActivity(Intent(this, LockActivity::class.java))
         }
 
         // ✅ NetworkMonitorService 시작
-        findViewById<Button>(R.id.btn_start_network_service).setOnClickListener {
+        findViewById<ImageButton>(R.id.btn_start_network_service).setOnClickListener {
             val intent = Intent(this, NetworkMonitorService::class.java)
             startService(intent)
         }
 
         // ✅ MapActivity 열기
-        findViewById<Button>(R.id.btn_open_map).setOnClickListener {
+        findViewById<ImageButton>(R.id.btn_open_map).setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
             intent.putExtra("view_only", true)
             startActivity(intent)
         }
 
         // ✅ HomeActivity로 이동
-        findViewById<Button>(R.id.btn_go_home).setOnClickListener {
+        findViewById<ImageButton>(R.id.btn_go_home).setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
@@ -89,7 +90,7 @@ class AdminActivity : AppCompatActivity() {
         val devicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
         val compName = ComponentName(this, MyDeviceAdminReceiver::class.java)
 
-        findViewById<Button>(R.id.btn_enable_admin).setOnClickListener {
+        findViewById<ImageButton>(R.id.btn_enable_admin).setOnClickListener {
             if (!devicePolicyManager.isAdminActive(compName)) {
                 val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {
                     putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName)
@@ -99,7 +100,7 @@ class AdminActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<Button>(R.id.btn_disable_admin).setOnClickListener {
+        findViewById<ImageButton>(R.id.btn_disable_admin).setOnClickListener {
             if (devicePolicyManager.isAdminActive(compName)) {
                 devicePolicyManager.removeActiveAdmin(compName)
             }

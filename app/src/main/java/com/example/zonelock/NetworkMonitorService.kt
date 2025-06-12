@@ -23,7 +23,7 @@ import android.content.pm.ServiceInfo
 class NetworkMonitorService : Service() {
 
     private val TAG = "NetworkMonitorService"
-    private val apiUrl = "https://c96c-203-241-183-12.ngrok-free.app/ssid"
+    private val apiUrl = "https://4ea1-203-241-183-12.ngrok-free.app/ssid"
     private val handler = Handler(Looper.getMainLooper())
     private val checkInterval: Long = 5000L
 
